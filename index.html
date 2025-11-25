@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREESTYLE GAMING PANEL</title>
+
+<style>
+/* ------------------- VARIÁVEIS ------------------- */
+:root {
+    --primary: #39FF14;
+    --primary-dark: #2DD410;
+    --primary-glow: rgba(57, 255, 20, 0.4);
+    --accent: #00FF7F;
+    --bg-main: #0D1B0D;
+    --bg-card: #162216;
+    --bg-secondary: #1A2B1A;
+    --text-primary: #E8F5E9;
+    --text-muted: #81C784;
+    --border: rgba(57, 255, 20, 0.12);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* ------------------- ANIMAÇÃO DE FUNDO ------------------- */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(57, 255, 20, 0.18), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(0, 255, 127, 0.18), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ------------------- NAVBAR ------------------- */
+.navbar {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: rgba(21, 25, 50, 0.6);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px var(--primary-glow);
+}
+
+.version-badge {
+    padding: 8px 18px;
+    background: rgba(57, 255, 20, 0.15);
+    border: 1px solid var(--primary);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+/* ------------------- LAYOUT ------------------- */
+.main-wrapper {
+    position: relative;
+    display: flex;
+    min-height: calc(100vh - 89px);
+    z-index: 1;
+}
+
+/* ------------------- NAVEGAÇÃO LATERAL ------------------- */
+.nav-sidebar {
+    width: 280px;
+    padding: 40px 24px;
+    background: rgba(21, 25, 50, 0.4);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid var(--border);
+}
+
+.nav-item {
+    position: relative;
+    margin-bottom: 16px;
+    padding: 18px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-muted);
+    overflow: hidden;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-item:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--primary);
+    transform: translateX(8px);
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(0, 255, 127, 0.2));
+    color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 20px var(--primary-glow);
+}
+
+.nav-item.active::before {
+    transform: scaleY(1);
+}
+
+/* ------------------- ÁREA DE CONTEÚDO ------------------- */
+.content-area {
+    flex: 1;
+    padding: 40px 48px;
+    overflow-y: auto;
+}
+
+.section {
+    display: none;
+    animation: slideIn 0.4s ease;
+}
+
+.section.active {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-header {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 32px;
+    background: linear-gradient(135deg, var(--text-primary), var(--text-muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ------------------- GRID DE CARDS ------------------- */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 28px;
+}
+
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+    border-color: var(--primary);
+}
+
+/* ------------------- CONTROLES ------------------- */
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.control-row:last-child {
+    border-bottom: none;
+}
+
+.control-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* TOGGLE SWITCH */
+.toggle-switch {
+    position: relative;
+    width: 56px;
+    height: 28px;
+    background: var(--bg-secondary);
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.toggle-switch.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.toggle-switch.active::after {
+    left: 31px;
+    background: white;
+}
+
+/* ------------------- SLIDERS ------------------- */
+.slider-group {
+    margin: 24px 0;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.slider-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.slider-value {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.custom-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--primary-glow);
+    transition: all 0.2s ease;
+}
+
+.custom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* ------------------- BOTÕES DE MODO ------------------- */
+.mode-selector {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding: 8px;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+}
+
+.mode-option {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-option:hover {
+    color: var(--text-primary);
+}
+
+.mode-option.active {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    box-shadow: 0 4px 16px var(--primary-glow);
+}
+
+/* ------------------- STATUS ------------------- */
+.status-list {
+    margin-top: 24px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #00FF88;
+    font-weight: 700;
+}
+
+.status-indicator::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #00FF88;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #00FF88;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ------------------- MODAL ------------------- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border: 2px solid var(--primary);
+    border-radius: 24px;
+    padding: 48px;
+    max-width: 480px;
+    text-align: center;
+    box-shadow: 0 0 60px var(--primary-glow);
+    animation: modalIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+}
+
+.modal-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--primary);
+}
+
+.modal-text {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.modal-button {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px var(--primary-glow);
+}
+
+.modal-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px var(--primary-glow);
+}
+
+/* ------------------- RESPONSIVO ------------------- */
+@media (max-width: 1024px) {
+    .main-wrapper {
+        flex-direction: column;
+    }
+    
+    .nav-sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 20px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .nav-item {
+        min-width: 140px;
+        margin-right: 12px;
+        margin-bottom: 0;
+    }
+    
+    .content-area {
+        padding: 24px;
+    }
+    
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 20px 24px;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .logo {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">⚡ FREESTYLE</div>
+    <div class="version-badge">V3.5 ULTIMATE</div>
+</nav>
+
+<!-- LAYOUT PRINCIPAL -->
+<div class="main-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="nav-sidebar">
+        <div class="nav-item active" data-section="features">RECURSOS</div>
+        <div class="nav-item" data-section="sensitivity">SENSIBILIDADE</div>
+        <div class="nav-item" data-section="protection">PROTEÇÃO</div>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="content-area">
+        <!-- SEÇÃO RECURSOS -->
+        <section class="section active" id="features">
+            <h1 class="section-header">Recursos Avançados</h1>
+            
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="control-row">
+                        <span class="control-label">AIMBOT PRECISION</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">SMART LOCK</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">AUTO ADJUST</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">HEADSHOT BOOST</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">RECOIL CONTROL</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">PRECISÃO</span>
+                            <span class="slider-value">50%</span>
+                        </div>
+                        <input type="range" class="custom-slider" value="50">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">VELOCIDADE</span>
+                            <span class="slider-value">50%</span>
+                        </div>
+                        <input type="range" class="custom-slider" value="50">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">ALCANCE</span>
+                            <span class="slider-value">50%</span>
+                        </div>
+                        <input type="range" class="custom-slider" value="50">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO SENSIBILIDADE -->
+        <section class="section" id="sensitivity">
+            <h1 class="section-header">Ajuste de Sensibilidade</h1>
+            
+            <div class="feature-card">
+                <div class="mode-selector">
+                    <button class="mode-option active">BÁSICO</button>
+                    <button class="mode-option">AVANÇADO</button>
+                    <button class="mode-option">CUSTOM</button>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-title">GERAL</span>
+                        <span class="slider-value">50%</span>
+                    </div>
+                    <input type="range" class="custom-slider" value="50">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-title">MIRA HOLOGRÁFICA</span>
+                        <span class="slider-value">50%</span>
+                    </div>
+                    <input type="range" class="custom-slider" value="50">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-title">ZOOM 2X</span>
+                        <span class="slider-value">50%</span>
+                    </div>
+                    <input type="range" class="custom-slider" value="50">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-title">ZOOM 4X</span>
+                        <span class="slider-value">50%</span>
+                    </div>
+                    <input type="range" class="custom-slider" value="50">
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO PROTEÇÃO -->
+        <section class="section" id="protection">
+            <h1 class="section-header">Sistema de Proteção</h1>
+            
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="control-row">
+                        <span class="control-label">ANTI-DETECT V5</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">STEALTH MODE</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">BYPASS SHIELD</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">SECURE TUNNEL</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">DATA MASKING</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="control-row">
+                        <span class="control-label">IP ROTATION</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">ID SPOOFER</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label">SCREEN PROTECT</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+
+                    <h3 style="margin: 24px 0 16px; color: var(--primary); font-size: 18px;">STATUS ATUAL</h3>
+                    
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span>CONTA</span>
+                            <span class="status-indicator">PROTEGIDA</span>
+                        </div>
+                        <div class="status-row">
+                            <span>DISPOSITIVO</span>
+                            <span class="status-indicator">SEGURO</span>
+                        </div>
+                        <div class="status-row">
+                            <span>CONEXÃO</span>
+                            <span class="status-indicator">CRIPTOGRAFADA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- MODAL DE INSCRIÇÃO -->
+<div class="modal-overlay" id="subscribeModal">
+    <div class="modal-content">
+        <div class="modal-icon">🔒</div>
+        <div class="modal-title">ACESSO PREMIUM</div>
+        <div class="modal-text">
+            Para desbloquear todos os recursos do<br>
+            <strong>FREESTYLE</strong>, inscreva-se no canal!
+        </div>
+        <button class="modal-button" onclick="unlockPanel()">
+            DESBLOQUEAR AGORA
+        </button>
+    </div>
+</div>
+
+<script>
+// Toggle switches
+document.querySelectorAll('.toggle-switch').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+    });
+});
+
+// Navegação
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(item.dataset.section).classList.add('active');
+    });
+});
+
+// Botões de modo
+document.querySelectorAll('.mode-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
+
+// Sliders
+document.querySelectorAll('.custom-slider').forEach(slider => {
+    slider.addEventListener('input', (e) => {
+        const valueDisplay = e.target.previousElementSibling.querySelector('.slider-value');
+        if (valueDisplay) {
+            valueDisplay.textContent = e.target.value + '%';
+        }
+    });
+});
+
+// Modal
+function unlockPanel() {
+    document.getElementById('subscribeModal').style.display = 'none';
+    window.open('https://www.youtube.com/@knxits', '_blank');
+}
+
+window.onload = () => {
+    document.getElementById('subscribeModal').style.display = 'flex';
+};
+</script>
+
+</body>
+</html>
